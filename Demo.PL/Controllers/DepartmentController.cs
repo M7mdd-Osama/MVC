@@ -7,11 +7,11 @@ namespace Demo.PL.Controllers
 	public class DepartmentController : Controller
 	{
 		private readonly IDepartmentRepository _departmentRepository;
-        public DepartmentController(IDepartmentRepository departmentRepository)
-        {
+		public DepartmentController(IDepartmentRepository departmentRepository)
+		{
 			_departmentRepository = departmentRepository;
 		}
-        public IActionResult Index()
+		public IActionResult Index()
 		{
 			var departments = _departmentRepository.GetAll();
 			return View(departments);
@@ -30,14 +30,47 @@ namespace Demo.PL.Controllers
 			}
 			return View(department);
 		}
-		public IActionResult Details(int? id)
+		public IActionResult Details(int? id, string ViewName = "Details")
 		{
 			if (id is null)
 				return BadRequest();
 			var department = _departmentRepository.GetById(id.Value);
-			if(department is null)
+			if (department is null)
 				return NotFound();
+			return View(ViewName, department);
+		}
+
+		[HttpGet]
+		public IActionResult Edit(int? id)
+		{
+			//if (id is null)
+			//	return BadRequest();
+			//var department = _departmentRepository.GetById(id.Value);
+			//if (department is null)
+			//	return NotFound();
+			//return View(department);
+			return Details(id, "Edit");
+		}
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public IActionResult Edit(Department department, [FromRoute] int id)
+		{
+			if (id != department.Id)
+				return BadRequest();
+			if (ModelState.IsValid)
+			{
+				try
+				{
+					_departmentRepository.Update(department);
+					return RedirectToAction(nameof(Index));
+				}
+				catch (System.Exception ex)
+				{
+					ModelState.AddModelError(string.Empty, ex.Message);
+				}
+			}
 			return View(department);
 		}
 	}
 }
+
