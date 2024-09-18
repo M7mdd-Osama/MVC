@@ -19,5 +19,5 @@
 	<label class="col-form-label" asp-for="DateOfCreation"></label>
 	<input readonly class="form-control" asp-for="DateOfCreation" />
 </div>
-<a asp-action="Edit" class="btn btn-secondary">Edit</a>
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary">Edit</a>
 <a asp-action="Index" class="btn btn-light">Back To List</a>
