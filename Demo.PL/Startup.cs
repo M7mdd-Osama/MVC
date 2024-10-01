@@ -1,6 +1,7 @@
 using Demo.BLL.Interfaces;
 using Demo.BLL.Repositories;
 using Demo.DAL.Contexts;
+using Demo.PL.MappingProfiles;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -22,7 +23,7 @@ namespace Demo.PL
 		{
 			Configuration = configuration;
 		}
-		
+
 		public IConfiguration Configuration { get; }
 
 		// This method gets called by the runtime. Use this method to add services to the container.
@@ -32,9 +33,12 @@ namespace Demo.PL
 			services.AddDbContext<MvcAppDbContext>(options =>
 			{
 				options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-			}); //Allow Dependancy Injection
+			}, ServiceLifetime.Scoped); //Allow Dependancy Injection
 			services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 			services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+
+			services.AddAutoMapper(M => M.AddProfile(new EmployeeProfile()));
+			services.AddScoped<IUnitOfWork, UnitOfWork>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
