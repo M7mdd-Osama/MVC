@@ -8,14 +8,15 @@ namespace Demo.PL.Controllers
 {
 	public class DepartmentController : Controller
 	{
-		private readonly IDepartmentRepository _departmentRepository;
-		public DepartmentController(IDepartmentRepository departmentRepository)
+		private readonly IUnitOfWork _unitOfWork;
+
+		public DepartmentController( IUnitOfWork unitOfWork)
 		{
-			_departmentRepository = departmentRepository;
+			_unitOfWork = unitOfWork;
 		}
 		public IActionResult Index()
 		{
-			var departments = _departmentRepository.GetAll();
+			var departments = _unitOfWork.DepartmentRepository.GetAll();
 			return View(departments);
 		}
 		public IActionResult Create()
@@ -27,7 +28,8 @@ namespace Demo.PL.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				int Result = _departmentRepository.Add(department);
+				_unitOfWork.DepartmentRepository.Add(department);
+				var Result = _unitOfWork.Complete();
 				if (Result > 0)
 				{
 					TempData["Message"] = "Department Is Created";
@@ -40,7 +42,7 @@ namespace Demo.PL.Controllers
 		{
 			if (id is null)
 				return BadRequest();
-			var department = _departmentRepository.GetById(id.Value);
+			var department = _unitOfWork.DepartmentRepository.GetById(id.Value);
 			if (department is null)
 				return NotFound();
 			return View(ViewName, department);
@@ -51,7 +53,7 @@ namespace Demo.PL.Controllers
 		{
 			//if (id is null)
 			//	return BadRequest();
-			//var department = _departmentRepository.GetById(id.Value);
+			//var department = _unitOfWork.DepartmentRepository.GetById(id.Value);
 			//if (department is null)
 			//	return NotFound();
 			//return View(department);
@@ -67,7 +69,7 @@ namespace Demo.PL.Controllers
 			{
 				try
 				{
-					_departmentRepository.Update(department);
+					_unitOfWork.DepartmentRepository.Update(department);
 					return RedirectToAction(nameof(Index));
 				}
 				catch (System.Exception ex)
@@ -88,7 +90,7 @@ namespace Demo.PL.Controllers
 				return BadRequest();
 			try
 			{
-				_departmentRepository.Delete(department);
+				_unitOfWork.DepartmentRepository.Delete(department);
 				return RedirectToAction(nameof(Index));
 			}
 			catch (System.Exception ex)
