@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System;
 using Microsoft.AspNetCore.Http;
 
-namespace Demo.PL.Models
+namespace Demo.PL.ViewModels
 {
 	public class EmployeeViewModel
 	{

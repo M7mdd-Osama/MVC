@@ -3,7 +3,7 @@ using Demo.BLL.Interfaces;
 using Demo.BLL.Repositories;
 using Demo.DAL.Models;
 using Demo.PL.Helpers;
-using Demo.PL.Models;
+using Demo.PL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections;
 using System.Collections.Generic;
@@ -106,7 +106,11 @@ namespace Demo.PL.Controllers
 			{
 				var MappedEmployee = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
 				_unitOfWork.EmployeeRepository.Delete(MappedEmployee);
-				_unitOfWork.Complete();
+				var Result = _unitOfWork.Complete();
+				if (Result > 0 && employeeVM.ImageName is not null)
+				{
+					DocumentSettings.DeleteFile(employeeVM.ImageName, "Images");
+				}
 				return RedirectToAction(nameof(Index));
 			}
 			catch (System.Exception ex)
