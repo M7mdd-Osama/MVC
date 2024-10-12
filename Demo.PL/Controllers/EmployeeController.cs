@@ -81,6 +81,7 @@ namespace Demo.PL.Controllers
 			{
 				try
 				{
+					employeeVM.ImageName = DocumentSettings.UploadFile(employeeVM.Image, "Images");
 					var MappedEmployee = _mapper.Map<Employee>(employeeVM);
 					_unitOfWork.EmployeeRepository.Update(MappedEmployee);
 					_unitOfWork.Complete();
