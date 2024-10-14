@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Demo.DAL.Models;
-using Demo.PL.Models;
+using Demo.PL.ViewModels;
 
 namespace Demo.PL.MappingProfiles
 {

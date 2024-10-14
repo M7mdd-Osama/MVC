@@ -1,10 +1,13 @@
 using Demo.BLL.Interfaces;
 using Demo.BLL.Repositories;
 using Demo.DAL.Contexts;
+using Demo.DAL.Models;
 using Demo.PL.MappingProfiles;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.Extensions.Configuration;
@@ -39,6 +42,27 @@ namespace Demo.PL
 
 			services.AddAutoMapper(M => M.AddProfile(new EmployeeProfile()));
 			services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+			services.AddIdentity<ApplicationUser, IdentityRole>(Options =>
+			{
+				Options.Password.RequireNonAlphanumeric = true; //@#$
+				Options.Password.RequireDigit = true; //1234
+				Options.Password.RequireLowercase = true; //ssfs
+				Options.Password.RequireUppercase = true; //FDSDS
+				//Pa$$w0rd
+				//P@ssw0rd
+			})
+					.AddEntityFrameworkStores<MvcAppDbContext>()
+					.AddDefaultTokenProviders();
+			//services.AddScoped<UserManager<ApplicationUser>>();
+			//services.AddScoped<SignInManager<ApplicationUser>>();
+			//services.AddScoped<RoleManager<ApplicationUser>>();
+			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(Options =>
+			{
+				Options.LoginPath = "Account/Login";
+				Options.AccessDeniedPath = "Home/Error";
+			});
+
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,14 +82,14 @@ namespace Demo.PL
 			app.UseStaticFiles();
 
 			app.UseRouting();
-
+			app.UseAuthentication();
 			app.UseAuthorization();
 
 			app.UseEndpoints(endpoints =>
 			{
 				endpoints.MapControllerRoute(
 					name: "default",
-					pattern: "{controller=Home}/{action=Index}/{id?}");
+					pattern: "{controller=Account}/{action=Login}/{id?}");
 			});
 		}
 	}

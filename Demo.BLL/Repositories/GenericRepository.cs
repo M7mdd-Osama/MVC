@@ -19,9 +19,9 @@ namespace Demo.BLL.Repositories
 			_dbContext = dbContext;
 		}
 
-		public void Add(T item)
+		public async Task AddAsync(T item)
 		{
-			_dbContext.Add(item);
+			await _dbContext.AddAsync(item);
 		}
 
 		public void Delete(T item)
@@ -29,17 +29,17 @@ namespace Demo.BLL.Repositories
 			_dbContext.Remove(item);
 		}
 
-		public IEnumerable<T> GetAll()
+		public async Task<IEnumerable<T>> GetAllAsync()
 		{
 			if (typeof(T) == typeof(Employee))
 			{
-				return (IEnumerable<T>)_dbContext.Employees.Include(E => E.Department).ToList();
+				return (IEnumerable<T>)await _dbContext.Employees.Include(E => E.Department).ToListAsync();
 			}
-			return _dbContext.Set<T>().ToList();
+			return await _dbContext.Set<T>().ToListAsync();
 		}
 
-		public T GetById(int Id)
-		=> _dbContext.Set<T>().Find(Id);
+		public async Task<T> GetByIdAsync(int Id)
+		=>await _dbContext.Set<T>().FindAsync(Id);
 
 
 		public void Update(T item)
