@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Demo.DAL.Contexts
 {
-	public class MvcAppDbContext : IdentityDbContext
+	public class MvcAppDbContext : IdentityDbContext<ApplicationUser>
 	{
         public MvcAppDbContext(DbContextOptions<MvcAppDbContext> options) : base(options)
         {

@@ -4,6 +4,7 @@ using Demo.BLL.Repositories;
 using Demo.DAL.Models;
 using Demo.PL.Helpers;
 using Demo.PL.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace Demo.PL.Controllers
 {
+	[Authorize]
 	public class EmployeeController : Controller
 	{
 		private readonly IUnitOfWork _unitOfWork;
